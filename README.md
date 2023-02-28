@@ -45,4 +45,8 @@
   python main.py
   ```
 
-  * Cron Job
+  * Run with &
+  ```
+  python main.py &
+  ```
+

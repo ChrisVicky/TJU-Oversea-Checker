@@ -107,32 +107,29 @@ def get_saved_content():
 
 
 if __name__ == "__main__":
-    while True:
-        logger.info(f"{time.ctime()}")
-        if os.path.exists(filename):
-            logger.debug(f"{filename} Exists")
-            saved = get_saved_content()
-            ret = get_first_page()
-            for i in ret:
-                if i in saved:
-                    # logger.info(f"{i} is saved")
-                    pass
+    logger.info(f"{time.ctime()}")
+    if os.path.exists(filename):
+        logger.debug(f"{filename} Exists")
+        saved = get_saved_content()
+        ret = get_first_page()
+        for i in ret:
+            if i in saved:
+                # logger.info(f"{i} is saved")
+                pass
+            else:
+                logger.debug(f"{i} NOT SAVED")
+                # Send Email 
+                if send_mail(account, password, receiver, i):
+                    logger.error("Send Email Error")
                 else:
-                    logger.debug(f"{i} NOT SAVED")
-                    # Send Email 
-                    if send_mail(account, password, receiver, i):
-                        logger.error("Send Email Error")
-                    else:
-                        logger.debug("Send Email Success")
-                        with open(filename, 'a') as f:
-                            f.write(i)
-        else:
-            """ First Time """
-            ret = get_first_page()
-            with open(filename, 'w') as f:
-                for i in ret:
-                    f.write(i)
-            logger.debug(f"Save ret to {filename}")
-        logger.debug("Sleep for 5 min")
-        time.sleep(300)
+                    logger.debug("Send Email Success")
+                    with open(filename, 'a') as f:
+                        f.write(i)
+    else:
+        """ First Time """
+        ret = get_first_page()
+        with open(filename, 'w') as f:
+            for i in ret:
+                f.write(i)
+        logger.debug(f"Save ret to {filename}")
 
