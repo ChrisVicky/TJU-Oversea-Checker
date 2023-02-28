@@ -6,6 +6,7 @@ from loguru import logger
 import os
 from email.mime.text import MIMEText
 from email.header import Header
+import time
 
 logger.add("info.log", level="TRACE", rotation="1 week")
 
@@ -22,7 +23,7 @@ password = config['password']
 smtp_server = config['smtp_server']
 receiver = config['receiver']
 
-assert len(account) == 0 or len(password) == 0 or len(smtp_server) == 0 or len(receiver) == 0, f"config.yaml Error"
+assert len(account) != 0 or len(password) != 0 or len(smtp_server) != 0 or len(receiver) != 0, f"config.yaml Error"
     
 
 def send_mail(account, password, receiver, msg):
@@ -106,28 +107,32 @@ def get_saved_content():
 
 
 if __name__ == "__main__":
-    if os.path.exists(filename):
-        logger.debug(f"{filename} Exists")
-        saved = get_saved_content()
-        ret = get_first_page()
-        for i in ret:
-            if i in saved:
-                # logger.info(f"{i} is saved")
-                pass
-            else:
-                logger.debug(f"{i} NOT SAVED")
-                # Send Email 
-                if send_mail(account, password, receiver, i):
-                    logger.error("Send Email Error")
-                else:
-                    logger.debug("Send Email Success")
-                    with open(filename, 'a') as f:
-                        f.write(i)
-    else:
-        """ First Time """
-        ret = get_first_page()
-        with open(filename, 'w') as f:
+    while True:
+        logger.info(f"{time.ctime()}")
+        if os.path.exists(filename):
+            logger.debug(f"{filename} Exists")
+            saved = get_saved_content()
+            ret = get_first_page()
             for i in ret:
-                f.write(i)
-        logger.debug(f"Save ret to {filename}")
+                if i in saved:
+                    # logger.info(f"{i} is saved")
+                    pass
+                else:
+                    logger.debug(f"{i} NOT SAVED")
+                    # Send Email 
+                    if send_mail(account, password, receiver, i):
+                        logger.error("Send Email Error")
+                    else:
+                        logger.debug("Send Email Success")
+                        with open(filename, 'a') as f:
+                            f.write(i)
+        else:
+            """ First Time """
+            ret = get_first_page()
+            with open(filename, 'w') as f:
+                for i in ret:
+                    f.write(i)
+            logger.debug(f"Save ret to {filename}")
+        logger.debug("Sleep for 5 min")
+        time.sleep(300)
 
