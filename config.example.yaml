@@ -1,0 +1,11 @@
+# Email Account
+account: "xxxxx@tju.edu.cn"
+
+# Email Password
+password: "xxxxx"
+
+# Email SMTP Server
+smtp_server: "smtp.tju.edu.cn"
+
+# Who to Receive
+receiver: "xxxxx@xx.com"
