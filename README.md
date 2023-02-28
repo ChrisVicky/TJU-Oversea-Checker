@@ -1,4 +1,4 @@
-# TJU Overseas Project Checker
+# TJU Overseas Checker
 
 ---
 
